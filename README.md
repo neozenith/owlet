@@ -11,8 +11,13 @@ terraform init
 terraform apply --auto-approve
 
 # Invoke Lambda
-aws invoke --region=ap-southeast-2 --profile=play --function-name=HelloWorld response.json
+aws lambda invoke \
+ --region="$(terraform output -raw aws_region)" \
+ --profile="$(terraform output -raw aws_profile)" \
+ --function-name="$(terraform output -raw function_name)" response.json
 
 # Request API
 curl "$(terraform output -raw base_url)/hello?Name=ME"
+
+terraform destroy --auto-approve
 ```

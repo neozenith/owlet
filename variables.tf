@@ -11,5 +11,5 @@ variable "aws_profile" {
   description = "AWS credentials profile"
 
   type    = string
-  default = "play"
+  default = "default"
 }
