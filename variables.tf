@@ -13,3 +13,9 @@ variable "aws_profile" {
   type    = string
   default = "default"
 }
+
+variable "project_name" {
+  description = "name of project to use in tags"
+  type        = string
+  default     = "hello world"
+}
