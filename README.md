@@ -6,6 +6,9 @@ applications.
 Follow along with this [tutorial on HashiCorp
 Learn](https://learn.hashicorp.com/tutorials/terraform/lambda-api-gateway?in=terraform/aws).
 
+Adding Cognito Authorizer inspired by this video:
+[https://www.youtube.com/watch?v=o7OHogUcRmI](https://www.youtube.com/watch?v=o7OHogUcRmI)
+
 ```bash
 terraform init
 terraform apply --auto-approve
@@ -37,6 +40,9 @@ curl -H "Authorization: Bearer $TOKEN" "$(terraform output -raw base_url)/hello?
 
 
 terraform destroy --auto-approve
+
+# Housekeeping
+terraform fmt && terraform validate && terraform graph | dot -Tsvg > graph.svg
 ```
 
 ## Diagram
