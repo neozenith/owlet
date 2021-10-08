@@ -3,17 +3,10 @@ resource "random_pet" "lambda_bucket_name" {
   length = 4
 }
 
-
+locals {
+  data_model = yamldecode(file("${path.module}/${var.data_model}"))
+}
 
 
 # TODO:
-# Read this to integrate cognito with api gateway
-# https://github.com/voquis/terraform-aws-cognito-user-pool-http-api
-#
-# API GatewayV2 Route Authorizer
-#   - Create JWT Authorizer
-#     - name: cognito-auth
-#     - identity-source: $request.header.Authorization
-#     - issuer url: https://cognito-idp.{region}.amazonaws.com/{userPoolId}
-#     - audience: appClientId
-#
+# refactor to parametrised modules

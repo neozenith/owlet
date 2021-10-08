@@ -38,10 +38,10 @@ resource "aws_cognito_user_pool_client" "client" {
 
   allowed_oauth_flows_user_pool_client = true
   allowed_oauth_flows                  = ["implicit"]
-  allowed_oauth_scopes                 = ["openid", "email", "aws.cognito.signin.user.admin"]
+  allowed_oauth_scopes                 = var.oauth_scopes
 
-  callback_urls = ["https://127.0.0.1:3000"]
-  logout_urls   = ["https://127.0.0.1:3000"]
+  callback_urls = var.callback_urls
+  logout_urls   = var.callback_urls
 }
 
 resource "aws_cognito_user_pool_domain" "identity_domain" {

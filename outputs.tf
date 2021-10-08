@@ -1,20 +1,3 @@
-# Output value definitions
-
-output "lambda_bucket_name" {
-  description = "Name of the S3 bucket used to store function code."
-  value       = aws_s3_bucket.lambda_bucket.id
-}
-
-output "function_name" {
-  description = "Name of the Lambda function."
-  value       = aws_lambda_function.hello_world.function_name
-}
-
-output "base_url" {
-  description = "Base URL for API Gateway stage."
-  value       = aws_apigatewayv2_stage.lambda.invoke_url
-}
-
 # Output resolved values to assist in script automation
 output "aws_profile" {
   description = "The name of the AWS profile used"
@@ -25,12 +8,29 @@ output "aws_region" {
   value       = var.aws_region
 }
 
-# Cognito
-output "cognito_userpool" {
-  description = "The cognito userpool"
-  value       = aws_cognito_user_pool.pool
+output "data_model" {
+  description = "Loaded data model"
+  value       = local.data_model
 }
-output "cognito_client" {
+
+# Lambda and API Gateway
+output "function_name" {
+  description = "Name of the Lambda function."
+  value       = aws_lambda_function.hello_world.function_name
+}
+
+output "base_url" {
+  description = "Base URL for API Gateway stage."
+  value       = aws_apigatewayv2_stage.lambda.invoke_url
+}
+
+
+# Cognito
+output "cognito_userpool_endpoint" {
+  description = "The cognito userpool endpoint"
+  value       = aws_cognito_user_pool.pool.endpoint
+}
+output "cognito_client_id" {
   description = "The cognito userpool client"
   value       = aws_cognito_user_pool_client.client.id
 }
@@ -39,4 +39,12 @@ output "cognito_domain" {
   value       = aws_cognito_user_pool_domain.identity_domain
 }
 
+output "login_url" {
+  description = "Login URL for Cognito User Pool"
+  value       = "https://${aws_cognito_user_pool_domain.identity_domain.domain}.auth.${var.aws_region}.amazoncognito.com/login?client_id=${aws_cognito_user_pool_client.client.id}&response_type=token&scope=${join("+", var.oauth_scopes)}&redirect_uri=${var.callback_urls[0]}"
+}
 
+output "signup_url" {
+  description = "Signup URL for Cognito User Pool"
+  value       = "https://${aws_cognito_user_pool_domain.identity_domain.domain}.auth.${var.aws_region}.amazoncognito.com/signup?client_id=${aws_cognito_user_pool_client.client.id}&response_type=token&scope=${join("+", var.oauth_scopes)}&redirect_uri=${var.callback_urls[0]}"
+}

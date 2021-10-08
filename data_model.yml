@@ -1,0 +1,31 @@
+---
+gym_activity:
+  description: |
+    A single activity lifting weights in the gym.
+    Empty sets and reps are assumed to have a value of 1.
+  properties:
+    - name: timestamp
+      type: number
+    - name: activity_type
+      type: string
+    - name: sets
+      type: string
+    - name: reps
+      type: string
+    - name: weight
+      type: string
+strava_activity:
+  description: |
+    A single activity running, cycling, zwifting, hiking or kayaking recorded on Strava
+  properties:
+    - name: timestamp
+      type: number
+    - name: activity_type
+      type: string
+    - name: duration
+      type: number
+    - name: distance
+      type: number
+    - name: moving_time
+      type: number
+      

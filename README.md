@@ -33,6 +33,8 @@ curl "$(terraform output -raw base_url)/hello?Name=ME"
 
 # Securely request API
 # Navigate to Hosted UI for signup
+open "$(terraform output -raw signup_url)"
+
 # grab value from signup redirect
 TOKEN=<value you just grabbed>
 

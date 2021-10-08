@@ -19,3 +19,21 @@ variable "project_name" {
   type        = string
   default     = "hello world"
 }
+
+variable "data_model" {
+  description = "Path to data model YAML file"
+  type        = string
+  default     = "data_model.yml"
+}
+
+variable "callback_urls" {
+  description = "Callback URLs for Signup, Login and Signout"
+  type        = list(string)
+  default     = ["https://127.0.0.1:3000"]
+}
+
+variable "oauth_scopes" {
+  description = "OAuth scopes"
+  type        = list(string)
+  default     = ["openid", "email", "aws.cognito.signin.user.admin"]
+}
