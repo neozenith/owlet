@@ -28,3 +28,7 @@ curl "$(terraform output -raw base_url)/hello?Name=ME"
 
 terraform destroy --auto-approve
 ```
+
+## Diagram
+
+![architecture diagram](graph.svg)
