@@ -26,6 +26,16 @@ aws lambda invoke \
 # Request API
 curl "$(terraform output -raw base_url)/hello?Name=ME"
 
+{"message":"Unauthorized"}
+
+# Securely request API
+# Navigate to Hosted UI for signup
+# grab value from signup redirect
+TOKEN=<value you just grabbed>
+
+curl -H "Authorization: Bearer $TOKEN" "$(terraform output -raw base_url)/hello?Name=ME"
+
+
 terraform destroy --auto-approve
 ```
 
