@@ -1,11 +1,10 @@
 # Learn Terraform - Lambda functions and API Gateway
 
-AWS Lambda functions and API gateway are often used to create serverlesss
+1. AWS Lambda functions and API gateway are often used to create serverlesss
 applications.
+1. Follow along with this [tutorial on HashiCorp Learn](https://learn.hashicorp.com/tutorials/terraform/lambda-api-gateway?in=terraform/aws).
 
-Follow along with this [tutorial on HashiCorp Learn](https://learn.hashicorp.com/tutorials/terraform/lambda-api-gateway?in=terraform/aws).
-
-Adding Cognito Authorizer inspired by this video:
+1. Added Cognito Authorizer inspired by this video:
 [https://www.youtube.com/watch?v=o7OHogUcRmI](https://www.youtube.com/watch?v=o7OHogUcRmI)
 
 ```bash
@@ -52,3 +51,10 @@ terraform -chdir=infrastructure graph | dot -Tsvg > graph.svg
 ## Diagram
 
 ![architecture diagram](graph.svg)
+
+# Learning Resources:
+
+ - https://learn.hashicorp.com/tutorials/terraform/lambda-api-gateway
+ - Terraform crash course: https://www.youtube.com/watch?v=SLB_c_ayRMo
+ - Terraform tutorials: https://www.youtube.com/playlist?list=PL8HowI-L-3_9bkocmR3JahQ4Y-Pbqs2Nt
+ - Terraform in Action Book: https://www.manning.com/books/terraform-in-action
