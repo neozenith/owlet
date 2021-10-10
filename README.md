@@ -56,6 +56,23 @@ terraform -chdir=infra graph | dot -Tsvg > graph.svg
 
 ![architecture diagram](graph.svg)
 
+# TODO List
+
+ - Create React app with logged out and logged in component state
+ - Redirect to cognito login and callback with auth information
+ - Have React app securely query Lambda API with Auth credentials
+ - Refactor terraform config into logical modules
+ - parametrise API endpoints based on modules and data_model.yml
+ - All data concepts should have an automatic HTML form to submit data one entry at a time.
+ - All data concepts should have a drag and drop file upload for mass data entry
+ - Research data storage options:
+  - Aurora Serverless?
+  - Athena?
+  - Python Lambda + S3 + Parquet?
+  - Python Lambda + S3 + deltalake?
+ - What would a developer portal look like for direct API access? API Gateway does support Swagger exports
+
+
 # Learning Resources:
 
  - https://learn.hashicorp.com/tutorials/terraform/lambda-api-gateway
