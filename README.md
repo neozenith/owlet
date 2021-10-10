@@ -1,13 +1,40 @@
-# Learn Terraform - Lambda functions and API Gateway
+# Owlet: Modest Data Project Template
 
-1. AWS Lambda functions and API gateway are often used to create serverlesss
-applications.
-1. Follow along with this [tutorial on HashiCorp Learn](https://learn.hashicorp.com/tutorials/terraform/lambda-api-gateway?in=terraform/aws).
-1. Added Cognito Authorizer inspired by this video:
-[https://www.youtube.com/watch?v=o7OHogUcRmI](https://www.youtube.com/watch?v=o7OHogUcRmI)
-1. Added React static site based on this tutorial: [https://learn.hashicorp.com/tutorials/terraform/cloudflare-static-website?in=terraform/aws](https://learn.hashicorp.com/tutorials/terraform/cloudflare-static-website?in=terraform/aws)
+This project aims to create a template for "modest data" projects (as opposed to _big data_).
+But this project also aims to use technology to make the transition to a big data projects easier.
+
+Why **Owlet**? Well baby owls are called Owlets. These projects start small and should sleep most of the time and wake a couple of times of day like owls at dawn and dusk. With the idea these projects can leave the nest and fly on their own later.
+
+## Project values
+
+ - Minimise financial costs, and total project running costs to be less than $10 / month (ideally $1/month)
+ - Designed for infrequent (once a day or once a week usage) use and scale to zero
+ - Use least amount of technology components, components used should have wide adoption and community support
+ - Technology should gateway enable big data projects
+ - Getting started should be my data model, my credentials and project name and 2-3 commands.
+ - Avoid technologies that mean lock-in (like AWS SAM)
+
+## Architecture in a nutshell
+
+ - Frontend: React static hosting on S3 (Costs: S3 + CloudFront is using CDN)
+ - Backend: API Gateway + Lambda + JWT Auth
+ - Auth: Cognito using OAuth2 spec
+ - Data storage:
+   - Aurora Serverless?
+   - Athena + S3 + Parquet?
+   - Python Lambda + S3 + Deltalake?
+
+
+# Speed run
+
+The following commands are my code snippet scratch pad do perform a full run through.
+
+It also keeps the onboarding cognitive load front and center. 
+
+**I aim to keep this small.**
 
 ```bash
+./tasks.py init
 ./tasks.py tf-up
 
 cd infra
@@ -75,8 +102,14 @@ terraform -chdir=infra graph | dot -Tsvg > graph.svg
 
 # Learning Resources:
 
- - https://learn.hashicorp.com/tutorials/terraform/lambda-api-gateway
+Key resources:
+
+ - Follow along with this [tutorial on HashiCorp Learn](https://learn.hashicorp.com/tutorials/terraform/lambda-api-gateway?in=terraform/aws).
+ - Added Cognito Authorizer inspired by this video: [https://www.youtube.com/watch?v=o7OHogUcRmI](https://www.youtube.com/watch?v=o7OHogUcRmI)
+ - Added React static site based on this tutorial: [https://learn.hashicorp.com/tutorials/terraform/cloudflare-static-website?in=terraform/aws](https://learn.hashicorp.com/tutorials/terraform/cloudflare-static-website?in=terraform/aws)
+
+More resources:
+
  - Terraform crash course: https://www.youtube.com/watch?v=SLB_c_ayRMo
  - Terraform tutorials: https://www.youtube.com/playlist?list=PL8HowI-L-3_9bkocmR3JahQ4Y-Pbqs2Nt
  - Terraform in Action Book: https://www.manning.com/books/terraform-in-action
- - Terraform static site tutorial: https://learn.hashicorp.com/tutorials/terraform/cloudflare-static-website?in=terraform/aws
