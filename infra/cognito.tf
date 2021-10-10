@@ -48,3 +48,8 @@ resource "aws_cognito_user_pool_domain" "identity_domain" {
   domain       = var.project_name
   user_pool_id = aws_cognito_user_pool.pool.id
 }
+
+resource "local_file" "website_userpool_config" {
+  content  = templatefile("${path.module}/userpool-config.json.tftpl", { poolId = aws_cognito_user_pool.pool.id, clientId = aws_cognito_user_pool_client.client.id })
+  filename = "${path.module}/../frontend/src/userpool-config.json"
+}
