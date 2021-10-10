@@ -3,14 +3,14 @@
 1. AWS Lambda functions and API gateway are often used to create serverlesss
 applications.
 1. Follow along with this [tutorial on HashiCorp Learn](https://learn.hashicorp.com/tutorials/terraform/lambda-api-gateway?in=terraform/aws).
-
 1. Added Cognito Authorizer inspired by this video:
 [https://www.youtube.com/watch?v=o7OHogUcRmI](https://www.youtube.com/watch?v=o7OHogUcRmI)
+1. Added React static site based on this tutorial: [https://learn.hashicorp.com/tutorials/terraform/cloudflare-static-website?in=terraform/aws](https://learn.hashicorp.com/tutorials/terraform/cloudflare-static-website?in=terraform/aws)
 
 ```bash
 ./tasks.py tf-up
 
-cd infrastructure
+cd infra
 # Invoke Lambda
 aws lambda invoke \
  --region="$(terraform output -raw aws_region)" \
@@ -40,12 +40,16 @@ curl -H "Authorization: Bearer $TOKEN" "$(terraform output -raw base_url)/hello?
 
 cd..
 
+# Build and deploy static site
+./tasks.py ui-build
+./tasks.py ui-deploy
+
 # Clean up
 ./tasks.py tf-down
 
 # Housekeeping
 ./tasks.py tf-fmt
-terraform -chdir=infrastructure graph | dot -Tsvg > graph.svg
+terraform -chdir=infra graph | dot -Tsvg > graph.svg
 ```
 
 ## Diagram

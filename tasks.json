@@ -8,17 +8,17 @@
   ],
 
   "tf-fmt": [
-    {"sh":"terraform -chdir=infrastructure fmt"},
-    {"sh":"terraform -chdir=infrastructure validate"}
+    {"sh":"terraform -chdir=infra fmt"},
+    {"sh":"terraform -chdir=infra validate"}
   ],
   "tf-up": [
-    {"sh":"terraform -chdir=infrastructure init"},
-    {"sh":"terraform -chdir=infrastructure fmt"},
-    {"sh":"terraform -chdir=infrastructure validate"},
-    {"sh":"terraform -chdir=infrastructure apply -auto-approve"}
+    {"sh":"terraform -chdir=infra init"},
+    {"sh":"terraform -chdir=infra fmt"},
+    {"sh":"terraform -chdir=infra validate"},
+    {"sh":"terraform -chdir=infra apply -auto-approve"}
   ],
   "tf-down": [
-    {"sh":"terraform -chdir=infrastructure destroy -auto-approve"}
+    {"sh":"terraform -chdir=infra destroy -auto-approve"}
   ],
 
   "ui-create": [
@@ -29,7 +29,11 @@
   ],
   "ui-serve": [
     {"py":"http.server --directory frontend/build"}
+  ],
+  "ui-deploy": [
+    {"sh":"./site-deploy.sh"}
+  ],
+  "ui-destroy": [
+    {"sh":"./site-destroy.sh"}
   ]
-
-
 }

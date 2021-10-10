@@ -1,4 +1,7 @@
+###############################################################################
+# Meta data
 # Output resolved values to assist in script automation
+###############################################################################
 output "aws_profile" {
   description = "The name of the AWS profile used"
   value       = var.aws_profile
@@ -13,7 +16,9 @@ output "data_model" {
   value       = local.data_model
 }
 
+###############################################################################
 # Lambda and API Gateway
+###############################################################################
 output "function_name" {
   description = "Name of the Lambda function."
   value       = aws_lambda_function.hello_world.function_name
@@ -24,8 +29,9 @@ output "base_url" {
   value       = aws_apigatewayv2_stage.lambda.invoke_url
 }
 
-
+###############################################################################
 # Cognito
+###############################################################################
 output "cognito_userpool_endpoint" {
   description = "The cognito userpool endpoint"
   value       = aws_cognito_user_pool.pool.endpoint
@@ -47,4 +53,17 @@ output "login_url" {
 output "signup_url" {
   description = "Signup URL for Cognito User Pool"
   value       = "https://${aws_cognito_user_pool_domain.identity_domain.domain}.auth.${var.aws_region}.amazoncognito.com/signup?client_id=${aws_cognito_user_pool_client.client.id}&response_type=token&scope=${join("+", var.oauth_scopes)}&redirect_uri=${var.callback_urls[0]}"
+}
+
+###############################################################################
+# Static site
+###############################################################################
+output "website_endpoint" {
+  description = "Website endpoint"
+  value       = aws_s3_bucket.site.website_endpoint
+}
+
+output "website_bucket" {
+  description = "Website bucket"
+  value       = aws_s3_bucket.site.id
 }

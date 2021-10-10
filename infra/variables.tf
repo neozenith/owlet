@@ -15,7 +15,13 @@ variable "aws_profile" {
 variable "project_name" {
   description = "name of project to use in tags"
   type        = string
-  default     = "hello world"
+  default     = "helloworld"
+}
+
+variable "site_domain" {
+  description = "site domain name"
+  type        = string
+  default     = "example.com"
 }
 
 variable "data_model" {

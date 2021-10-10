@@ -37,12 +37,14 @@ def _load_config():
     return config
 
 def _shcmd(command, args=[]):
-    return run(command.split(" ") + args)
+    cmd_parts = command if type(command) == list else command.split(" ")
+    return run(cmd_parts + args, shell=True)
 
 
 def _pycmd(command, args=[]):
     py3 = ".venv/bin/python3"
-    return run([py3, "-m"] + command.split(" ") + args)
+    cmd_parts = command if type(command) == list else command.split(" ")
+    return run([py3, "-m"] + cmd_parts + args)
 
 def _run_task(task, steps, args):
     if task == "version":
