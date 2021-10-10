@@ -113,6 +113,12 @@ Key resources:
  - Follow along with this [tutorial on HashiCorp Learn](https://learn.hashicorp.com/tutorials/terraform/lambda-api-gateway?in=terraform/aws).
  - Added Cognito Authorizer inspired by this video: [https://www.youtube.com/watch?v=o7OHogUcRmI](https://www.youtube.com/watch?v=o7OHogUcRmI)
  - Added React static site based on this tutorial: [https://learn.hashicorp.com/tutorials/terraform/cloudflare-static-website?in=terraform/aws](https://learn.hashicorp.com/tutorials/terraform/cloudflare-static-website?in=terraform/aws)
+ - React Protected routes with Cognito signin:
+    - [https://www.youtube.com/watch?v=Y0-qdp-XBJg](https://www.youtube.com/watch?v=Y0-qdp-XBJg)
+    - [https://www.youtube.com/playlist?list=PLDckhLrNepPR8y-9mDXsLutiwsLhreOk1](https://www.youtube.com/playlist?list=PLDckhLrNepPR8y-9mDXsLutiwsLhreOk1)
+    - [https://www.youtube.com/playlist?list=PLaxxQQak6D_eARpHp6JdMq3rvD5A-WU9N](https://www.youtube.com/playlist?list=PLaxxQQak6D_eARpHp6JdMq3rvD5A-WU9N)
+ - https://www.youtube.com/playlist?list=PLVLP4csKTwDbhEybIwYk_4pmygVYTA8po
+ - https://www.youtube.com/playlist?list=PLVLP4csKTwDYuaPo83MABH-VQY9xp1Gc4
 
 More resources:
 

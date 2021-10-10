@@ -22,7 +22,7 @@
   ],
 
   "ui-create": [
-    {"sh":"npx create-react-app --template typescript --use-npm frontend"}
+    {"sh":"npx create-react-app --template cra-template-pwa-typescript --use-npm frontend"}
   ],
   "ui-build": [
     {"sh":"cd frontend && npm run build && cd .."}

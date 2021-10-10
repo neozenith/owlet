@@ -1,2 +1,0 @@
-# Basic React WebApp
-

@@ -38,7 +38,7 @@ def _load_config():
 
 def _shcmd(command, args=[]):
     cmd_parts = command if type(command) == list else command.split(" ")
-    return run(cmd_parts + args, shell=True)
+    return run(cmd_parts + args)
 
 
 def _pycmd(command, args=[]):
