@@ -17,7 +17,7 @@ Why **Owlet**? Well baby owls are called Owlets. These projects start small and 
 ## Architecture in a nutshell
 
  - Infra-as-Code: Terraform
- - Frontend: React static hosting on S3 (Costs: S3 + CloudFront is using CDN)
+ - Frontend: React static hosting on S3 (Costs: S3 + CloudFront if using CDN)
  - Backend: API Gateway + Python Lambda + JWT Auth
  - Auth: Cognito using OAuth2 spec
  - Data storage:
