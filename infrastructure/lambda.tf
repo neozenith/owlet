@@ -5,11 +5,12 @@ resource "aws_s3_bucket" "lambda_bucket" {
   force_destroy = true
 }
 
+# TODO: Parametrise lambda routes/integrations by the data_model.yaml
 data "archive_file" "lambda_hello_world" {
   type = "zip"
 
-  source_dir  = "${path.module}/hello-world"
-  output_path = "${path.module}/hello-world.zip"
+  source_dir  = "${path.module}/../backend/hello-world"
+  output_path = "${path.module}/../backend/hello-world.zip"
 }
 
 resource "aws_s3_bucket_object" "lambda_hello_world" {

@@ -1,0 +1,35 @@
+{
+  "version": "0.1.0",
+  "init": [
+    {"sh": "python3 -m venv .venv"},
+    {"py": "pip install --upgrade pip setuptools"},
+    {"py": "pip install --upgrade -r requirements.txt"},
+    {"py": "pip list -v --no-index"}
+  ],
+
+  "tf-fmt": [
+    {"sh":"terraform -chdir=infrastructure fmt"},
+    {"sh":"terraform -chdir=infrastructure validate"}
+  ],
+  "tf-up": [
+    {"sh":"terraform -chdir=infrastructure init"},
+    {"sh":"terraform -chdir=infrastructure fmt"},
+    {"sh":"terraform -chdir=infrastructure validate"},
+    {"sh":"terraform -chdir=infrastructure apply -auto-approve"}
+  ],
+  "tf-down": [
+    {"sh":"terraform -chdir=infrastructure destroy -auto-approve"}
+  ],
+
+  "ui-create": [
+    {"sh":"npx create-react-app --template typescript --use-npm frontend"}
+  ],
+  "ui-build": [
+    {"sh":"cd frontend && npm run build && cd .."}
+  ],
+  "ui-serve": [
+    {"py":"http.server --directory frontend/build"}
+  ]
+
+
+}
