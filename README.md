@@ -16,13 +16,19 @@ Why **Owlet**? Well baby owls are called Owlets. These projects start small and 
 
 ## Architecture in a nutshell
 
+ - Infra-as-Code: Terraform
  - Frontend: React static hosting on S3 (Costs: S3 + CloudFront is using CDN)
- - Backend: API Gateway + Lambda + JWT Auth
+ - Backend: API Gateway + Python Lambda + JWT Auth
  - Auth: Cognito using OAuth2 spec
  - Data storage:
    - Aurora Serverless?
    - Athena + S3 + Parquet?
    - Python Lambda + S3 + Deltalake?
+
+Ideally object storage and parquet like storage seems to offer good compression, good metadata and the ability to easily ingest from other sources later like:
+ - SageMaker
+ - Databricks
+ - Snowflake
 
 
 # Speed run
