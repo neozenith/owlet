@@ -62,3 +62,4 @@ terraform -chdir=infra graph | dot -Tsvg > graph.svg
  - Terraform crash course: https://www.youtube.com/watch?v=SLB_c_ayRMo
  - Terraform tutorials: https://www.youtube.com/playlist?list=PL8HowI-L-3_9bkocmR3JahQ4Y-Pbqs2Nt
  - Terraform in Action Book: https://www.manning.com/books/terraform-in-action
+ - Terraform static site tutorial: https://learn.hashicorp.com/tutorials/terraform/cloudflare-static-website?in=terraform/aws
