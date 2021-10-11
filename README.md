@@ -24,6 +24,7 @@ Why **Owlet**? Well baby owls are called Owlets. These projects start small and 
    - Aurora Serverless?
    - Athena + S3 + Parquet?
    - Python Lambda + S3 + Deltalake?
+   - DynamoDb?
 
 
 Ideally object storage and parquet like storage seems to offer good compression, good metadata and the ability to easily ingest from other sources later like:
@@ -115,7 +116,8 @@ terraform -chdir=infra graph | dot -Tsvg > graph.svg
     - Requests $0.20 / 1M requests
       - eg 1000 requests = $0.0002
       - Free tier = 1M requests
- - 
+ - DynamoDB:
+   - Free Tier: 25Gb storage, 2.5M stream read requests, 1Gb data transfer out
 
 # TODO List
 
