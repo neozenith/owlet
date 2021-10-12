@@ -1,6 +1,7 @@
 resource "aws_cognito_user_pool" "pool" {
-  name              = "userpool-${var.project_name}"
-  mfa_configuration = "OFF"
+  name                = "userpool-${var.project_name}"
+  username_attributes = ["email"]
+  mfa_configuration   = "OFF"
 
   schema {
     attribute_data_type = "String"
@@ -22,8 +23,10 @@ resource "aws_cognito_user_pool" "pool" {
   admin_create_user_config {
     allow_admin_create_user_only = false
   }
-  alias_attributes         = ["email"]
   auto_verified_attributes = ["email"]
+  verification_message_template {
+    default_email_option = "CONFIRM_WITH_LINK"
+  }
 
 }
 
