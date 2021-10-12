@@ -121,15 +121,22 @@ terraform -chdir=infra graph | dot -Tsvg > graph.svg
 
 # TODO List
 
- - Terraform should use a template to create userpool-config.json artifact for the React app to use.
- - Create React signup form
- - Create React login form
- - Create data form accessible once logged in
- - Have React app securely query Lambda API with Auth credentials from session cookie
  - Refactor terraform config into logical modules
  - parametrise API endpoints based on modules and data_model.yml
+ - tidy up automation scripts and better understand how to neatly run shell scripts from python
+
+ - Watch freeCodeCamp React tutorials
+ - Tidy up login flow
+   - Handle error messages like invalid password on signup
+   - Refresh app state after signup/login
+   - Tidy fonts, logos and colours.
+ - Create protected routes for each concept in data model
+
+ - Create data form accessible once logged in
+ - Have React app securely query Lambda API with Auth credentials from session cookie
  - All data concepts should have an automatic HTML form to submit data one entry at a time.
  - All data concepts should have a drag and drop file upload for mass data entry
+
  - Research data storage options:
   - Aurora Serverless?
   - Athena?
