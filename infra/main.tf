@@ -42,9 +42,6 @@ module "api_lambda_endpoints" {
 
   for_each = local.data_model
 
-  aws_profile = var.aws_profile
-  aws_region  = var.aws_region
-
   target       = each.key
   project_name = var.project_name
 

@@ -43,6 +43,7 @@
   ],
   "clean":[
     {"sh":"rm -rfv backend/dist/"},
+    {"sh":"rm -rfv backend/*.zip"},
     {"sh":"rm -rf frontend/build/"}
   ]
 }
