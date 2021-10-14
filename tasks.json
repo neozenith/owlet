@@ -41,15 +41,8 @@
   "uiserve": [
     {"py":"http.server --directory frontend/build"}
   ],
-  "uideploy": [
-    {"sh":"sh ./site-deploy.sh"}
-  ],
-  "uidestroy": [
-    {"sh":"sh ./site-destroy.sh"}
-  ],
   "clean":[
     {"sh":"rm -rfv backend/dist/"},
-    {"sh":"rm -rfv backend/*.zip"},
     {"sh":"rm -rf frontend/build/"}
   ]
 }

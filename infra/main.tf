@@ -10,9 +10,6 @@ resource "aws_s3_bucket" "lambda_bucket" {
   force_destroy = true
 }
 
-locals {
-  data_model = yamldecode(file("${path.module}/${var.data_model}"))
-}
 
 resource "aws_iam_role" "lambda_exec" {
   name = "serverless_lambda"
@@ -34,6 +31,10 @@ resource "aws_iam_role" "lambda_exec" {
 resource "aws_iam_role_policy_attachment" "lambda_policy" {
   role       = aws_iam_role.lambda_exec.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+locals {
+  data_model = yamldecode(file("${path.module}/${var.data_model}"))
 }
 
 module "api_lambda_endpoints" {

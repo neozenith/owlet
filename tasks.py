@@ -98,6 +98,13 @@ def _build_lambda(target):
     print(f"DEPS: {src_dir}/requirements.txt -> {out_dir}")
     _pycmd(f"pip install --target {out_dir} -r {src_dir}/requirements.txt --ignore-installed -qq")
 
+def task_uideploy(*args, **kwargs):
+    # aws s3 cp frontend/build/ "s3://$(terraform -chdir=infra output -raw website_bucket)/" --recursive --profile="$(terraform -chdir=infra output -raw aws_profile)"
+    bucket = _shcmd("terraform -chdir=infra output -raw website_bucket")
+    profile = _shcmd("terraform -chdir=infra output -raw aws_profile")
+    print(bucket, profile)
+
+
 if __name__ == "__main__":
     tasks = _load_config()
     tasks.update(_tasks_from_functions())
