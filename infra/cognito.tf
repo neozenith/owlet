@@ -1,5 +1,8 @@
+###############################################################################
+# COGNITO USER POOL
+###############################################################################
 resource "aws_cognito_user_pool" "pool" {
-  name                = "userpool-${var.project_name}"
+  name                = "${var.project_name}-user-pool"
   username_attributes = ["email"]
   mfa_configuration   = "OFF"
 
@@ -30,9 +33,11 @@ resource "aws_cognito_user_pool" "pool" {
 
 }
 
-
+###############################################################################
+# COGNITO APP CLIENT
+###############################################################################
 resource "aws_cognito_user_pool_client" "client" {
-  name = "userpool-client-${var.project_name}"
+  name = "${var.project_name}-userpool-client"
 
   user_pool_id                 = aws_cognito_user_pool.pool.id
   supported_identity_providers = ["COGNITO"]
@@ -47,11 +52,19 @@ resource "aws_cognito_user_pool_client" "client" {
   logout_urls   = var.callback_urls
 }
 
+
+###############################################################################
+# COGNITO DOMAIN
+###############################################################################
 resource "aws_cognito_user_pool_domain" "identity_domain" {
   domain       = var.project_name
   user_pool_id = aws_cognito_user_pool.pool.id
 }
 
+###############################################################################
+# USER POOL CONFIG
+#   This emits userpool id's needed for frontend/src/UserPool.ts
+###############################################################################
 resource "local_file" "website_userpool_config" {
   content  = templatefile("${path.module}/userpool-config.json.tftpl", { poolId = aws_cognito_user_pool.pool.id, clientId = aws_cognito_user_pool_client.client.id })
   filename = "${path.module}/../frontend/src/userpool-config.json"

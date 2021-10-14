@@ -43,24 +43,12 @@ It also keeps the onboarding cognitive load front and center.
 
 ```bash
 ./tasks.py init
-./tasks.py tf-up
+./tasks.py build
+./tasks.py tfup
 
 cd infra
-# Invoke Lambda
-aws lambda invoke \
- --region="$(terraform output -raw aws_region)" \
- --profile="$(terraform output -raw aws_profile)" \
- --function-name="$(terraform output -raw function_name)" response.json
-
-# Debugging
-aws lambda invoke \
- --region="$(terraform output -raw aws_region)" \
- --profile="$(terraform output -raw aws_profile)" \
- --function-name="$(terraform output -raw function_name)" response.json \
- --log-type Tail --query 'LogResult' --output text | base64 -D
-
 # Request API
-curl "$(terraform output -raw base_url)/hello?Name=ME"
+curl "$(terraform output -raw base_url)/gym_activity?Name=ME"
 
 {"message":"Unauthorized"}
 
@@ -71,19 +59,21 @@ open "$(terraform output -raw signup_url)"
 # grab access_token value from signup redirect
 TOKEN=<value you just grabbed>
 
-curl -H "Authorization: Bearer $TOKEN" "$(terraform output -raw base_url)/hello?Name=ME"
+curl -H "Authorization: Bearer $TOKEN" "$(terraform output -raw base_url)/gym_activity?Name=ME"
 
 cd..
 
 # Build and deploy static site
-./tasks.py ui-build
-./tasks.py ui-deploy
+./tasks.py uibuild
+./tasks.py uideploy
 
 # Clean up
-./tasks.py tf-down
+./tasks.py uidestroy
+./tasks.py tfdn
+./tasks.py clean
 
 # Housekeeping
-./tasks.py tf-fmt
+./tasks.py tffmt
 terraform -chdir=infra graph | dot -Tsvg > graph.svg
 ```
 
@@ -121,10 +111,6 @@ terraform -chdir=infra graph | dot -Tsvg > graph.svg
 
 # TODO List
 
- - Refactor terraform config into logical modules
- - parametrise API endpoints based on modules and data_model.yml
- - tidy up automation scripts and better understand how to neatly run shell scripts from python
-
  - Watch freeCodeCamp React tutorials
  - Tidy up login flow
    - Handle error messages like invalid password on signup
@@ -138,10 +124,9 @@ terraform -chdir=infra graph | dot -Tsvg > graph.svg
  - All data concepts should have a drag and drop file upload for mass data entry
 
  - Research data storage options:
-  - Aurora Serverless?
-  - Athena?
-  - Python Lambda + S3 + Parquet?
-  - Python Lambda + S3 + deltalake?
+  - Python Lambda + S3 + Parquet with PyArrow?
+  - Create API handlers to GET/POST data to/from parquet
+
  - What would a developer portal look like for direct API access?
  - Generate Swagger docs for API and publish under the /api/docs route.
 

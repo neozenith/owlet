@@ -6,34 +6,50 @@
     {"py": "pip install --upgrade -r requirements.txt"},
     {"py": "pip list -v --no-index"}
   ],
+  "reinit": [
+    {"sh": "rm -rfv .venv"},
+    {"sh": "python3 -m venv .venv"},
+    {"py": "pip install --upgrade pip setuptools"},
+    {"py": "pip install --upgrade -r requirements.txt"},
+    {"py": "pip list -v --no-index"}
+  ],
 
-  "tf-fmt": [
+  "tffmt": [
     {"sh":"terraform -chdir=infra fmt"},
     {"sh":"terraform -chdir=infra validate"}
   ],
-  "tf-up": [
-    {"sh":"terraform -chdir=infra init"},
+  "tfup": [
+    {"sh":"echo INIT"},
+    {"sh":"terraform -chdir=infra init -upgrade"},
+    {"sh":"echo FORMAT"},
     {"sh":"terraform -chdir=infra fmt"},
+    {"sh":"echo VALIDATE"},
     {"sh":"terraform -chdir=infra validate"},
+    {"sh":"echo APPLY"},
     {"sh":"terraform -chdir=infra apply -auto-approve"}
   ],
-  "tf-down": [
+  "tfdn": [
     {"sh":"terraform -chdir=infra destroy -auto-approve"}
   ],
 
-  "ui-create": [
+  "uicreate": [
     {"sh":"npx create-react-app --template cra-template-pwa-typescript --use-npm frontend"}
   ],
-  "ui-build": [
+  "uibuild": [
     {"sh":"cd frontend && npm run build && cd .."}
   ],
-  "ui-serve": [
+  "uiserve": [
     {"py":"http.server --directory frontend/build"}
   ],
-  "ui-deploy": [
-    {"sh":"./site-deploy.sh"}
+  "uideploy": [
+    {"sh":"sh ./site-deploy.sh"}
   ],
-  "ui-destroy": [
-    {"sh":"./site-destroy.sh"}
+  "uidestroy": [
+    {"sh":"sh ./site-destroy.sh"}
+  ],
+  "clean":[
+    {"sh":"rm -rfv backend/dist/"},
+    {"sh":"rm -rfv backend/*.zip"},
+    {"sh":"rm -rf frontend/build/"}
   ]
 }

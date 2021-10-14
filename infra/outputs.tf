@@ -19,14 +19,14 @@ output "data_model" {
 ###############################################################################
 # Lambda and API Gateway
 ###############################################################################
-output "function_name" {
+output "api_endpoints" {
   description = "Name of the Lambda function."
-  value       = aws_lambda_function.hello_world.function_name
+  value       = module.api_lambda_endpoints[*]
 }
 
 output "base_url" {
   description = "Base URL for API Gateway stage."
-  value       = aws_apigatewayv2_stage.lambda.invoke_url
+  value       = aws_apigatewayv2_stage.this.invoke_url
 }
 
 ###############################################################################

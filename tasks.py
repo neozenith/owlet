@@ -3,7 +3,11 @@
 import json
 import os
 import sys
+from pprint import pprint as pp
 from subprocess import run
+from pathlib import Path
+import shutil
+import os
 
 __VERSION__ = "0.1.0"
 
@@ -14,15 +18,6 @@ default_scripts = {
         {"py":"pip install --upgrade pip setuptools"},
         {"py":"pip list -v --no-index"}
     ]
-    # TODO: Implement default tooling config generation
-    #  "lint": [
-    #      {"sh": "black ."},
-    #      {"sh": "flake8 ."},
-    #      {"sh": "isort ."},
-    #  ],
-    #  "test": [
-    #      {"py": "pytest"}
-    #  ]
 }
 
 def _check_config():
@@ -36,6 +31,9 @@ def _load_config():
         config = json.load(f)
     return config
 
+def _tasks_from_functions(prefix = "task_"):
+    return {k.replace(prefix, ""): v for k, v in globals().items() if k.startswith(prefix)}
+
 def _shcmd(command, args=[]):
     cmd_parts = command if type(command) == list else command.split(" ")
     return run(cmd_parts + args)
@@ -47,14 +45,12 @@ def _pycmd(command, args=[]):
     return run([py3, "-m"] + cmd_parts + args)
 
 def _run_task(task, steps, args):
-    if task == "version":
+    if isinstance(steps, str):
         print(steps)
-        return
-
-    return [
-        _run_step(step, args)
-        for step in steps
-    ]
+    elif callable(steps):
+        return steps(args)
+    else:
+        return [_run_step(step, args) for step in steps]
 
 def _run_step(step, args):
     for step_type, script in step.items():
@@ -72,9 +68,39 @@ def _exit_handler(status):
     if bad_statuses:
         sys.exit(bad_statuses)
 
+def task_build(*args, **kwargs):
+    # Only import on demand to keep the rest of this file dependency free
+    import yaml
+    with open('data_model.yml', 'r', encoding='utf-8') as stream:
+        schemas = yaml.safe_load(stream)
+
+    for target in schemas.keys():
+        _build_lambda(target)
+
+    return
+
+def _build_lambda(target):
+    print(f"\nBUILD: {target}")
+    src_dir = f"backend/{target}"
+    out_dir = f"backend/dist/{target}"
+
+    if not Path(src_dir).is_dir():
+        raise Error(f"Could not build '{target}' because missing folder '{src_dir}'")
+
+    print(f"CLEAN: {out_dir}")
+    if Path(out_dir).is_dir():
+        shutil.rmtree(out_dir)
+
+    print(f"COPY: {src_dir} -> {out_dir}")
+    shutil.copytree(src_dir, out_dir)
+
+    # install deps
+    print(f"DEPS: {src_dir}/requirements.txt -> {out_dir}")
+    _pycmd(f"pip install --target {out_dir} -r {src_dir}/requirements.txt --ignore-installed -qq")
 
 if __name__ == "__main__":
     tasks = _load_config()
+    tasks.update(_tasks_from_functions())
 
     if len(sys.argv) >= 2 and sys.argv[1] in tasks.keys():
         task = sys.argv[1]
@@ -82,4 +108,5 @@ if __name__ == "__main__":
         steps = tasks[task]
         _exit_handler(_run_task(task, steps, args))
     else:
-        print(f"Must provide a task from the following: {list(tasks.keys())}")
+        task_keys = "\n\t".join(list(tasks.keys()))
+        print(f"Must provide a task from the following:\n\t{task_keys}")
