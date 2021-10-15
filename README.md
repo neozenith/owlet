@@ -42,35 +42,27 @@ It also keeps the onboarding cognitive load front and center.
 **I aim to keep this small.**
 
 ```bash
+# Setup dev environment and tooling
 ./tasks.py init
+
+
+# Build backend
 ./tasks.py build
+
+# Setup infra and backend
 ./tasks.py tfup
-
-cd infra
-# Request API
-curl "$(terraform output -raw base_url)/gym_activity?Name=ME"
-
-{"message":"Unauthorized"}
-
-# Securely request API
-# Navigate to Hosted UI for signup
-open "$(terraform output -raw signup_url)"
-
-# grab access_token value from signup redirect
-TOKEN=<value you just grabbed>
-
-curl -H "Authorization: Bearer $TOKEN" "$(terraform output -raw base_url)/gym_activity?Name=ME"
-
-cd..
 
 # Build and deploy static site
 ./tasks.py uibuild
 ./tasks.py uideploy
 
-# Clean up
-./tasks.py uidestroy
-./tasks.py tfdn
-./tasks.py clean
+# Speen run
+./tasks.py build && ./tasks.py tfup && ./tasks.py uibuild && ./tasks.py uideploy
+
+open "https://$(terraform -chdir=infra output -raw website_endpoint)"
+
+# Clean up speed run
+./tasks.py uidestroy && ./tasks.py tfdn && ./tasks.py clean
 
 # Housekeeping
 ./tasks.py tffmt
@@ -111,6 +103,8 @@ terraform -chdir=infra graph | dot -Tsvg > graph.svg
 
 # TODO List
 
+Frontend:
+
  - Watch freeCodeCamp React tutorials
  - Tidy up login flow
    - Handle error messages like invalid password on signup
@@ -123,10 +117,13 @@ terraform -chdir=infra graph | dot -Tsvg > graph.svg
  - All data concepts should have an automatic HTML form to submit data one entry at a time.
  - All data concepts should have a drag and drop file upload for mass data entry
 
- - Research data storage options:
-  - Python Lambda + S3 + Parquet with PyArrow?
-  - Create API handlers to GET/POST data to/from parquet
+Storage:
 
+ - Research data storage options:
+   - Python Lambda + S3 + Parquet with PyArrow?
+   - Create API handlers to GET/POST data to/from parquet
+
+Misc:
  - What would a developer portal look like for direct API access?
  - Generate Swagger docs for API and publish under the /api/docs route.
 

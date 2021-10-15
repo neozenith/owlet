@@ -4,6 +4,8 @@ import json
 import os
 import sys
 from pprint import pprint as pp
+import shlex
+import subprocess
 from subprocess import run
 from pathlib import Path
 import shutil
@@ -34,15 +36,23 @@ def _load_config():
 def _tasks_from_functions(prefix = "task_"):
     return {k.replace(prefix, ""): v for k, v in globals().items() if k.startswith(prefix)}
 
-def _shcmd(command, args=[]):
-    cmd_parts = command if type(command) == list else command.split(" ")
-    return run(cmd_parts + args)
+def _shcmd(command, args=[], **kwargs):
+    if 'shell' in kwargs and kwargs['shell']:
+        return run(command, **kwargs)
+    else:
+        cmd_parts = command if type(command) == list else shlex.split(command)
+        cmd_parts = cmd_parts + args
+        return run(cmd_parts + args, **kwargs)
 
 
 def _pycmd(command, args=[]):
     py3 = ".venv/bin/python3"
-    cmd_parts = command if type(command) == list else command.split(" ")
+    cmd_parts = command if type(command) == list else shlex.split(command)
     return run([py3, "-m"] + cmd_parts + args)
+
+def _tfoutput(key_name):
+    opts = {"capture_output":True, "text":True}
+    return _shcmd(f"terraform -chdir=infra output -raw {key_name}", **opts).stdout
 
 def _run_task(task, steps, args):
     if isinstance(steps, str):
@@ -56,6 +66,8 @@ def _run_step(step, args):
     for step_type, script in step.items():
         if step_type == "sh":
             return _shcmd(script, args)
+        elif step_type == "sh+":
+            return _shcmd(script, args, shell=True)
         elif step_type == "py":
             return _pycmd(script, args)
         else:
@@ -98,11 +110,20 @@ def _build_lambda(target):
     print(f"DEPS: {src_dir}/requirements.txt -> {out_dir}")
     _pycmd(f"pip install --target {out_dir} -r {src_dir}/requirements.txt --ignore-installed -qq")
 
+def task_uibuild(*args, **kwargs):
+    opts = {"cwd":"frontend/"}
+    return _shcmd("npm run build", **opts)
+
 def task_uideploy(*args, **kwargs):
-    # aws s3 cp frontend/build/ "s3://$(terraform -chdir=infra output -raw website_bucket)/" --recursive --profile="$(terraform -chdir=infra output -raw aws_profile)"
-    bucket = _shcmd("terraform -chdir=infra output -raw website_bucket")
-    profile = _shcmd("terraform -chdir=infra output -raw aws_profile")
-    print(bucket, profile)
+    bucket = _tfoutput("website_bucket")
+    profile = _tfoutput("aws_profile")
+    print({bucket, profile})
+    return _shcmd(f"aws s3 cp frontend/build/ s3://{bucket}/ --recursive --profile={profile}")
+
+def task_uidestroy(*args, **kwargs):
+    bucket = _tfoutput("website_bucket")
+    profile = _tfoutput("aws_profile")
+    return _shcmd(f"aws s3 rm s3://{bucket}/ --recursive --profile={profile}")
 
 
 if __name__ == "__main__":

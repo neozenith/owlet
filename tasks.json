@@ -35,15 +35,12 @@
   "uicreate": [
     {"sh":"npx create-react-app --template cra-template-pwa-typescript --use-npm frontend"}
   ],
-  "uibuild": [
-    {"sh":"cd frontend && npm run build && cd .."}
-  ],
   "uiserve": [
     {"py":"http.server --directory frontend/build"}
   ],
   "clean":[
     {"sh":"rm -rfv backend/dist/"},
-    {"sh":"rm -rfv backend/*.zip"},
+    {"sh+":"rm -rfv backend/*.zip"},
     {"sh":"rm -rf frontend/build/"}
   ]
 }
