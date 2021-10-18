@@ -103,6 +103,9 @@ terraform -chdir=infra graph | dot -Tsvg > graph.svg
 
 # TODO List
 
+API:
+ - Add /profile route to give logged in user details about themself and API access
+
 Frontend:
 
  - Watch freeCodeCamp React tutorials
@@ -124,6 +127,8 @@ Storage:
    - Create API handlers to GET/POST data to/from parquet
 
 Misc:
+ - Add authorization code grant flow 
+ - Use terraform workspaces to create dev and prod instances
  - What would a developer portal look like for direct API access?
  - Generate Swagger docs for API and publish under the /api/docs route.
 
