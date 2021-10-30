@@ -37,6 +37,25 @@ locals {
   data_model = yamldecode(file("${path.module}/${var.data_model}"))
 }
 
+###############################################################################
+# FRONT END DATA MODEL
+#   This emits the data_model as JSON for consumption by the frontend UI.
+#   This is important since each endpoint will generate it's own Web Form UI.
+###############################################################################
+resource "local_file" "frontend_data_model_file" {
+  content  = jsonencode(local.data_model)
+  filename = "${path.module}/../frontend/src/datamodel.json"
+}
+
+###############################################################################
+# LAMBDA API ENDPOINT
+#   This iterate the data_model and uses a module to create the following for each 
+#   data model concept:
+#     - The lambda
+#     - The API Gateway Endpoint
+#     - The "integration" (endpoint --> lambda mapping)
+#     - The "authorizer" (cognito --> endpoint mapping)
+###############################################################################
 module "api_lambda_endpoints" {
   source = "./modules/endpoint"
 

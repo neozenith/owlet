@@ -109,11 +109,9 @@ API:
 Frontend:
 
  - Watch freeCodeCamp React tutorials
- - Tidy up login flow
-   - Handle error messages like invalid password on signup
-   - Refresh app state after signup/login
-   - Tidy fonts, logos and colours.
+ - Watch Material UI tutorials
  - Create protected routes for each concept in data model
+ - Tidy up login flow, possibly use  Material UI component?
 
  - Create data form accessible once logged in
  - Have React app securely query Lambda API with Auth credentials from session cookie
