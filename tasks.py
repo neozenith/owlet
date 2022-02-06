@@ -6,9 +6,6 @@ import shutil
 import sys
 from pathlib import Path
 from subprocess import run
-import json
-from pprint import pprint as pp
-import subprocess
 
 # NOTE:
 # 1. python ./tasks.py
@@ -112,6 +109,7 @@ def test(c):
 def build(c):
     """For each model in data_model.yml build backend lambda artifacts."""
     # Only import on demand to keep the rest of this file dependency free
+    # Third Party
     import yaml
 
     with open("data_model.yml", "r", encoding="utf-8") as stream:
@@ -129,7 +127,7 @@ def _build_lambda(target):
     out_dir = f"backend/dist/{target}"
 
     if not Path(src_dir).is_dir():
-        raise Error(f"Could not build '{target}' because missing folder '{src_dir}'")
+        raise ValueError(f"Could not build '{target}' because missing folder '{src_dir}'")
 
     print(f"CLEAN: {out_dir}")
     if Path(out_dir).is_dir():
