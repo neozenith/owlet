@@ -43,30 +43,47 @@ It also keeps the onboarding cognitive load front and center.
 
 ```bash
 # Setup dev environment and tooling
-./tasks.py init
-
+python3 ./tasks.py init
 
 # Build backend
-./tasks.py build
+inv build
 
 # Setup infra and backend
-./tasks.py tfup
+inv tfup
 
 # Build and deploy static site
-./tasks.py uibuild
-./tasks.py uideploy
+inv uibuild uideploy
 
 # Speen run
-./tasks.py build && ./tasks.py tfup && ./tasks.py uibuild && ./tasks.py uideploy
+inv build tfup uibuild uideploy
 
 open "https://$(terraform -chdir=infra output -raw website_endpoint)"
 
 # Clean up speed run
-./tasks.py uidestroy && ./tasks.py tfdn && ./tasks.py clean
+inv uidestroy tfdn clean
 
 # Housekeeping
-./tasks.py tffmt
+inv tffmt
 terraform -chdir=infra graph | dot -Tsvg > graph.svg
+```
+
+```sh
+λ inv --list
+Available tasks:
+
+  build       For each model in data_model.yml build backend lambda artifacts.
+  clean       Clean local build artifacts.
+  format      Autoformat code and sort imports.
+  lint        Run linting and formatting checks.
+  test        Run pytest.
+  tfdn        Tear down terraform described state.
+  tffmt       Format and validate terraform code.
+  tfup        Apply terraform modules to deploy updated state.
+  uibuild     Build UI Frontend artifacts locally.
+  uicreate    Initialise UI Frontedn from scratch.
+  uideploy    Upload built UI frontend components.
+  uidestroy   Tear down deployed frontend artifacts.
+  uiserve     Locally serve frontend UI for development purposes.
 ```
 
 ## Diagram

@@ -1,43 +1,80 @@
 #!/usr/bin/env python3
 # Standard Library
-import json
 import os
-import sys
-from pprint import pprint as pp
 import shlex
-import subprocess
-from subprocess import run
-from pathlib import Path
 import shutil
-import os
+import sys
+from pathlib import Path
+from subprocess import run
+import json
+from pprint import pprint as pp
+import subprocess
 
-__VERSION__ = "0.1.0"
+# NOTE:
+# 1. python ./tasks.py
+#    - Bootstrap venv and install invoke and create dummy decorator in interim
+# 2. invoke <name of task>
+#    - This should successfully import invoke and task decorator
+try:
+    # Third Party
+    from invoke import task
+except ImportError:
+    task = lambda *args, **kwargs: lambda x: x  # noqa: E731
 
-default_scripts = {
-    "version": __VERSION__,
-    "init": [
-        {"sh":"python3 -m venv .venv"},
-        {"py":"pip install --upgrade pip setuptools"},
-        {"py":"pip list -v --no-index"}
-    ]
-}
+DEFAULT_PYPROJECT_CONFIG = """
+[tool.black]
+line-length = 120
 
-def _check_config():
-    if not os.path.isfile("tasks.json"):
-        with open("tasks.json", "w") as f:
-            f.write(json.dumps(default_scripts, indent=2))
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+import_heading_stdlib = "Standard Library"
+import_heading_firstparty = "Our Libraries"
+import_heading_thirdparty = "Third Party"
 
-def _load_config():
-    _check_config()
-    with open("tasks.json", "r") as f:
-        config = json.load(f)
-    return config
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-v --color=yes"
 
-def _tasks_from_functions(prefix = "task_"):
-    return {k.replace(prefix, ""): v for k, v in globals().items() if k.startswith(prefix)}
+"""
+
+DEFAULT_FLAKE8_CONFIG = """
+[flake8]
+max-line-length=120
+max-complexity = 10
+exclude =
+    # No need to traverse our git directory
+    .git,
+    # There's no value in checking cache directories
+    __pycache__,
+    # Ignore virtual environment folders
+    .venv
+"""
+
+DEFAULT_REQUIREMENTS_DEV = """
+invoke
+flake8
+isort
+black
+pytest
+"""
+
+
+def _check_deps(filename):
+    if os.path.isfile(filename):
+        print(f"Installing deps from {filename}")
+        _shcmd(f".venv/bin/python3 -m pip install -qq --upgrade -r {filename}")
+
+
+def _check_config(filename, content):
+    if not os.path.isfile(filename):
+        print(f"Generating {filename} ...")
+        with open(filename, "w+") as f:
+            f.write(content)
+
 
 def _shcmd(command, args=[], **kwargs):
-    if 'shell' in kwargs and kwargs['shell']:
+    if "shell" in kwargs and kwargs["shell"]:
         return run(command, **kwargs)
     else:
         cmd_parts = command if type(command) == list else shlex.split(command)
@@ -45,51 +82,46 @@ def _shcmd(command, args=[], **kwargs):
         return run(cmd_parts + args, **kwargs)
 
 
-def _pycmd(command, args=[]):
-    py3 = ".venv/bin/python3"
-    cmd_parts = command if type(command) == list else shlex.split(command)
-    return run([py3, "-m"] + cmd_parts + args)
-
 def _tfoutput(key_name):
-    opts = {"capture_output":True, "text":True}
+    opts = {"capture_output": True, "text": True}
     return _shcmd(f"terraform -chdir=infra output -raw {key_name}", **opts).stdout
 
-def _run_task(task, steps, args):
-    if isinstance(steps, str):
-        print(steps)
-    elif callable(steps):
-        return steps(args)
-    else:
-        return [_run_step(step, args) for step in steps]
 
-def _run_step(step, args):
-    for step_type, script in step.items():
-        if step_type == "sh":
-            return _shcmd(script, args)
-        elif step_type == "sh+":
-            return _shcmd(script, args, shell=True)
-        elif step_type == "py":
-            return _pycmd(script, args)
-        else:
-            raise ValueError(f"Unknown task step type {step_type} for script {script}")
+@task
+def format(c):
+    """Autoformat code and sort imports."""
+    c.run("black .")
+    c.run("isort .")
 
 
-def _exit_handler(status):
-    statuses = status if type(status) == list else [status]
-    bad_statuses = [s for s in statuses if hasattr(s, 'returncode') and s.returncode != 0]
-    if bad_statuses:
-        sys.exit(bad_statuses)
+@task
+def lint(c):
+    """Run linting and formatting checks."""
+    c.run("black --check .")
+    c.run("isort --check .")
+    c.run("flake8 .")
 
-def task_build(*args, **kwargs):
+
+@task(pre=[lint])
+def test(c):
+    """Run pytest."""
+    c.run("python3 -m pytest")
+
+
+@task
+def build(c):
+    """For each model in data_model.yml build backend lambda artifacts."""
     # Only import on demand to keep the rest of this file dependency free
     import yaml
-    with open('data_model.yml', 'r', encoding='utf-8') as stream:
+
+    with open("data_model.yml", "r", encoding="utf-8") as stream:
         schemas = yaml.safe_load(stream)
 
     for target in schemas.keys():
         _build_lambda(target)
 
     return
+
 
 def _build_lambda(target):
     print(f"\nBUILD: {target}")
@@ -108,33 +140,91 @@ def _build_lambda(target):
 
     # install deps
     print(f"DEPS: {src_dir}/requirements.txt -> {out_dir}")
-    _pycmd(f"pip install --target {out_dir} -r {src_dir}/requirements.txt --ignore-installed -qq")
+    _shcmd(f"python3 -m pip install --target {out_dir} -r {src_dir}/requirements.txt --ignore-installed -qq")
 
-def task_uibuild(*args, **kwargs):
-    opts = {"cwd":"frontend/"}
+
+@task
+def uibuild(c):
+    """Build UI Frontend artifacts locally."""
+    opts = {"cwd": "frontend/"}
     return _shcmd("npm run build", **opts)
 
-def task_uideploy(*args, **kwargs):
+
+@task
+def uideploy(c):
+    """Upload built UI frontend components."""
     bucket = _tfoutput("website_bucket")
     profile = _tfoutput("aws_profile")
     print({bucket, profile})
     return _shcmd(f"aws s3 cp frontend/build/ s3://{bucket}/ --recursive --profile={profile}")
 
-def task_uidestroy(*args, **kwargs):
+
+@task
+def uidestroy(c):
+    """Tear down deployed frontend artifacts."""
     bucket = _tfoutput("website_bucket")
     profile = _tfoutput("aws_profile")
     return _shcmd(f"aws s3 rm s3://{bucket}/ --recursive --profile={profile}")
 
 
-if __name__ == "__main__":
-    tasks = _load_config()
-    tasks.update(_tasks_from_functions())
+@task
+def tffmt(c):
+    """Format and validate terraform code."""
+    _shcmd("terraform -chdir=infra fmt")
+    _shcmd("terraform -chdir=infra validate")
 
-    if len(sys.argv) >= 2 and sys.argv[1] in tasks.keys():
-        task = sys.argv[1]
-        args = sys.argv[2:]
-        steps = tasks[task]
-        _exit_handler(_run_task(task, steps, args))
+
+@task
+def tfup(c):
+    """Apply terraform modules to deploy updated state."""
+    _shcmd("terraform -chdir=infra init -upgrade"),
+    _shcmd("terraform -chdir=infra fmt"),
+    _shcmd("terraform -chdir=infra validate"),
+    _shcmd("terraform -chdir=infra apply -auto-approve")
+
+
+@task
+def tfdn(c):
+    """Tear down terraform described state."""
+    _shcmd("terraform -chdir=infra destroy -auto-approve")
+
+
+@task
+def uicreate(c):
+    """Initialise UI Frontedn from scratch."""
+    _shcmd("npx create-react-app --template cra-template-pwa-typescript --use-npm frontend")
+
+
+@task
+def uiserve(c):
+    """Locally serve frontend UI for development purposes."""
+    _shcmd("python3 -m http.server --directory frontend/build")
+
+
+@task
+def clean(c):
+    """Clean local build artifacts."""
+    _shcmd("rm -rfv backend/dist/")
+    _shcmd("rm -rfv backend/*.zip")
+    _shcmd("rm -rf frontend/build/")
+
+
+if __name__ == "__main__":
+
+    if len(sys.argv) >= 2 and sys.argv[1] in ["init"]:
+        _shcmd("rm -rf .venv")
+        _shcmd("python3 -m venv .venv")
+        _shcmd(".venv/bin/python3 -m pip install --upgrade pip")
+
+        _check_config("requirements-dev.txt", DEFAULT_REQUIREMENTS_DEV)
+        _check_config("pyproject.toml", DEFAULT_PYPROJECT_CONFIG)
+        _check_config(".flake8", DEFAULT_FLAKE8_CONFIG)
+
+        _check_deps("requirements.txt")
+        _check_deps("requirements-dev.txt")
+
     else:
-        task_keys = "\n\t".join(list(tasks.keys()))
-        print(f"Must provide a task from the following:\n\t{task_keys}")
+        print("This script should be run as:\n\n./tasks.py init\n\n")
+        print("This will self bootstrap a virtual environment but then use:\n\n")
+        print(". ./.venv/bin/activate")
+        print("invoke --list")
