@@ -203,7 +203,7 @@ def uiserve(c):
 def clean(c):
     """Clean local build artifacts."""
     _shcmd("rm -rfv backend/dist/")
-    _shcmd("rm -rfv backend/*.zip")
+    _shcmd("rm -rfv backend/*.zip", shell=True)
     _shcmd("rm -rf frontend/build/")
 
 

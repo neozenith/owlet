@@ -57,7 +57,7 @@ inv uibuild uideploy
 # Speen run
 inv build tfup uibuild uideploy
 
-open "https://$(terraform -chdir=infra output -raw website_endpoint)"
+open "http://$(terraform -chdir=infra output -raw website_endpoint)"
 
 # Clean up speed run
 inv uidestroy tfdn clean
