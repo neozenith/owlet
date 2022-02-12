@@ -14,6 +14,8 @@ const Account = (props: any) => {
           if (err) {
             reject(err);
           } else {
+            // TODO: https://youtu.be/cWJ2rUhbPyA?t=219
+            // Get user Attributes
             resolve(session);
           }
         });

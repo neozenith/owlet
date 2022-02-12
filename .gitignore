@@ -39,3 +39,8 @@ terraform.rc
 **/.DS_Store
 __pycache__/**
 **/dist/
+
+# Specific terraform build artifacts
+backend/*.zip
+frontend/src/datamodel.json
+frontend/src/userpool-config.json

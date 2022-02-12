@@ -157,7 +157,6 @@ Key resources:
  - Added React static site based on this tutorial: [https://learn.hashicorp.com/tutorials/terraform/cloudflare-static-website?in=terraform/aws](https://learn.hashicorp.com/tutorials/terraform/cloudflare-static-website?in=terraform/aws)
  - 2021 React Crash Course (2h) [https://www.youtube.com/watch?v=w7ejDZ8SWv8](https://www.youtube.com/watch?v=w7ejDZ8SWv8])
  - React Protected routes with Cognito signin:
-    - [https://www.youtube.com/watch?v=Y0-qdp-XBJg](https://www.youtube.com/watch?v=Y0-qdp-XBJg)
     - [https://www.youtube.com/playlist?list=PLDckhLrNepPR8y-9mDXsLutiwsLhreOk1](https://www.youtube.com/playlist?list=PLDckhLrNepPR8y-9mDXsLutiwsLhreOk1)
     - [https://www.youtube.com/playlist?list=PLaxxQQak6D_eARpHp6JdMq3rvD5A-WU9N](https://www.youtube.com/playlist?list=PLaxxQQak6D_eARpHp6JdMq3rvD5A-WU9N)
  - https://www.youtube.com/playlist?list=PLVLP4csKTwDbhEybIwYk_4pmygVYTA8po

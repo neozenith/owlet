@@ -1,6 +1,14 @@
-import React from 'react'
+import React, {useEffect, useContext, useState } from 'react'
+import { AccountContext } from "./Account";
 
 const Form = (props: any) => {
+    const { getSession } = useContext(AccountContext);
+    const [loggedIn, setLoggedIn] = useState(false);
+
+    useEffect(() => {
+        getSession().then(() => setLoggedIn(true));
+    }, []);
+
     const fields = props.fields as Array<{name: string, type: string}>;
 
     const inputTypeForFieldType = (fieldType: string): string => {
@@ -13,11 +21,10 @@ const Form = (props: any) => {
             <div>{props.description}</div>
             <form>
                 
-            {
-                fields.map((field, index) => {
+            { fields.map((field, index) => {
                     return(
                         <div>
-                        <label>{field.name}</label>
+                        <label htmlFor={field.name}>{field.name}</label>
                         <input key={index} id={field.name} value="" type={inputTypeForFieldType(field.type)} />
                         </div>
                     );

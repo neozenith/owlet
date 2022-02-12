@@ -72,15 +72,3 @@ resource "local_file" "website_userpool_config" {
   })
   filename = "${path.module}/../frontend/src/userpool-config.json"
 }
-###############################################################################
-# USER AUTH URLS
-#   This emits user auth URLs for login/signup for frontend/src/App.tsx
-###############################################################################
-resource "local_file" "website_user_auth_urls" {
-  content = templatefile("${path.module}/user-auth-urls.json.tftpl", {
-    loginUrl  = "https://${aws_cognito_user_pool_domain.identity_domain.domain}.auth.${var.aws_region}.amazoncognito.com/login?client_id=${aws_cognito_user_pool_client.client.id}&response_type=token&scope=${join("+", var.oauth_scopes)}&redirect_uri=${var.callback_urls[0]}",
-    signupUrl = "https://${aws_cognito_user_pool_domain.identity_domain.domain}.auth.${var.aws_region}.amazoncognito.com/signup?client_id=${aws_cognito_user_pool_client.client.id}&response_type=token&scope=${join("+", var.oauth_scopes)}&redirect_uri=${var.callback_urls[0]}"
-  })
-  filename = "${path.module}/../frontend/src/userAuthUrls.json"
-}
-
