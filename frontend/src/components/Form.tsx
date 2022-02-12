@@ -14,7 +14,7 @@ const Form = (props: any) => {
     const inputTypeForFieldType = (fieldType: string): string => {
         return "text"
     };
-
+    if (loggedIn) {
     return (
         <div>
             <h3>{props.name}</h3>
@@ -23,8 +23,8 @@ const Form = (props: any) => {
                 
             { fields.map((field, index) => {
                     return(
-                        <div>
-                        <label htmlFor={field.name}>{field.name}</label>
+                        <div key={`div-${index}`}>
+                        <label key={`label-${index}`} htmlFor={field.name}>{field.name}</label>
                         <input key={index} id={field.name} value="" type={inputTypeForFieldType(field.type)} />
                         </div>
                     );
@@ -37,6 +37,9 @@ const Form = (props: any) => {
 
         </div>
     )
+    } else {
+        return(<div></div>)
+    }
 }
 
 export default Form

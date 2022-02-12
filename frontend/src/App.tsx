@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import './App.css';
 import { Account, AccountContext, Status, LandingPage, Form } from './components';
+import { Route, Routes } from "react-router-dom";
 import dataModel from './datamodel.json';
 
 
@@ -8,14 +9,15 @@ function App() {
 
   return (
     <Account>
-
       <Status />
-      <LandingPage />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
       { Object.entries(dataModel).map(([k, v], index) => {
           return(
-          <Form key={index} name={k} description={v.description} fields={v.properties} />
+            <Route key={index} path={k} element={<Form name={k} description={v.description} fields={v.properties} />} />
           )
       })}
+      </Routes>
     </Account>
   );
 }

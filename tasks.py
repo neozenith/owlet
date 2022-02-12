@@ -207,6 +207,18 @@ def clean(c):
     _shcmd("rm -rf frontend/build/")
 
 
+@task(pre=[build, tfup])
+def devup(c):
+    """Setup dev environment for local UI develpoment."""
+    ...
+
+
+@task(pre=[tfdn, clean])
+def devdn(c):
+    """Tear down dev environment."""
+    ...
+
+
 if __name__ == "__main__":
 
     if len(sys.argv) >= 2 and sys.argv[1] in ["init"]:
