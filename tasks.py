@@ -116,12 +116,12 @@ def build(c):
         schemas = yaml.safe_load(stream)
 
     for target in schemas.keys():
-        _build_lambda(target)
+        _build_lambda(c, target)
 
     return
 
 
-def _build_lambda(target):
+def _build_lambda(context, target):
     print(f"\nBUILD: {target}")
     src_dir = f"backend/{target}"
     out_dir = f"backend/dist/{target}"
@@ -138,14 +138,14 @@ def _build_lambda(target):
 
     # install deps
     print(f"DEPS: {src_dir}/requirements.txt -> {out_dir}")
-    _shcmd(f"python3 -m pip install --target {out_dir} -r {src_dir}/requirements.txt --ignore-installed -qq")
+    context.run(f"python3 -m pip install --target {out_dir} -r {src_dir}/requirements.txt --ignore-installed -qq")
 
 
 @task
 def uibuild(c):
     """Build UI Frontend artifacts locally."""
     opts = {"cwd": "frontend/"}
-    return _shcmd("npm run build", **opts)
+    return c.run("npm run build", **opts)
 
 
 @task
@@ -154,7 +154,7 @@ def uideploy(c):
     bucket = _tfoutput("website_bucket")
     profile = _tfoutput("aws_profile")
     print({bucket, profile})
-    return _shcmd(f"aws s3 cp frontend/build/ s3://{bucket}/ --recursive --profile={profile}")
+    return c.run(f"aws s3 cp frontend/build/ s3://{bucket}/ --recursive --profile={profile}")
 
 
 @task
@@ -162,49 +162,49 @@ def uidestroy(c):
     """Tear down deployed frontend artifacts."""
     bucket = _tfoutput("website_bucket")
     profile = _tfoutput("aws_profile")
-    return _shcmd(f"aws s3 rm s3://{bucket}/ --recursive --profile={profile}")
+    return c.run(f"aws s3 rm s3://{bucket}/ --recursive --profile={profile}")
 
 
 @task
 def tffmt(c):
     """Format and validate terraform code."""
-    _shcmd("terraform -chdir=infra fmt")
-    _shcmd("terraform -chdir=infra validate")
+    c.run("terraform -chdir=infra fmt")
+    c.run("terraform -chdir=infra validate")
 
 
 @task
 def tfup(c):
     """Apply terraform modules to deploy updated state."""
-    _shcmd("terraform -chdir=infra init -upgrade"),
-    _shcmd("terraform -chdir=infra fmt"),
-    _shcmd("terraform -chdir=infra validate"),
-    _shcmd("terraform -chdir=infra apply -auto-approve")
+    c.run("terraform -chdir=infra init -upgrade"),
+    c.run("terraform -chdir=infra fmt"),
+    c.run("terraform -chdir=infra validate"),
+    c.run("terraform -chdir=infra apply -auto-approve")
 
 
 @task
 def tfdn(c):
     """Tear down terraform described state."""
-    _shcmd("terraform -chdir=infra destroy -auto-approve")
+    c.run("terraform -chdir=infra destroy -auto-approve")
 
 
 @task
 def uicreate(c):
     """Initialise UI Frontedn from scratch."""
-    _shcmd("npx create-react-app --template cra-template-pwa-typescript --use-npm frontend")
+    c.run("npx create-react-app --template cra-template-pwa-typescript --use-npm frontend")
 
 
 @task
 def uiserve(c):
     """Locally serve frontend UI for development purposes."""
-    _shcmd("python3 -m http.server --directory frontend/build")
+    c.run("python3 -m http.server --directory frontend/build")
 
 
 @task
 def clean(c):
     """Clean local build artifacts."""
-    _shcmd("rm -rfv backend/dist/")
-    _shcmd("rm -rfv backend/*.zip", shell=True)
-    _shcmd("rm -rf frontend/build/")
+    c.run("rm -rfv backend/dist/")
+    c.run("rm -rfv backend/*.zip")
+    c.run("rm -rf frontend/build/")
 
 
 @task(pre=[build, tfup])
